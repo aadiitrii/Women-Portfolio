@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Success</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    height:100vh;
+    background:#020617;
+    font-family:'Inter',sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+/* particles */
+canvas {
+    position:absolute;
+    top:0;
+    left:0;
+}
+
+/* card */
+.card {
+    position:relative;
+    z-index:2;
+    backdrop-filter: blur(25px);
+    background: rgba(255,255,255,0.05);
+    padding: 50px;
+    border-radius: 20px;
+    text-align: center;
+    width: 360px;
+    border:1px solid rgba(255,255,255,0.08);
+    animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity:0; transform:translateY(30px); }
+    to { opacity:1; transform:translateY(0); }
+}
+
+h2 {
+    font-family:'Playfair Display', serif;
+    color:white;
+    margin-top:20px;
+}
+
+p {
+    color:#9ca3af;
+    margin-top:10px;
+    font-size:14px;
+}
+
+/* lock animation */
+.lock {
+    font-size:50px;
+    color:#22c55e;
+    animation: unlock 1s ease forwards;
+}
+
+@keyframes unlock {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-20deg); }
+    100% { transform: rotate(0deg) scale(1.2); }
+}
+
+/* glow pulse */
+.glow {
+    animation: glowPulse 2s infinite;
+}
+
+@keyframes glowPulse {
+    0% { box-shadow:0 0 10px #22c55e; }
+    50% { box-shadow:0 0 25px #4ade80; }
+    100% { box-shadow:0 0 10px #22c55e; }
+}
+
+/* button */
+button {
+    margin-top:25px;
+    padding:12px 22px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover {
+    transform:translateY(-2px);
+}
+
+/* mobile */
+@media(max-width:400px){
+    .card {
+        width:90%;
+        padding:30px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="card glow">
+    <div class="lock">🔓</div>
+
+    <h2>Access Granted 🎉</h2>
+    <p>You’ve successfully passed authentication</p>
+
+    <button onclick="goHome()">Go Again</button>
+</div>
+
+<script>
+// 🎊 CONFETTI
+function confetti() {
+    for(let i=0;i<100;i++){
+        let div = document.createElement("div");
+        div.style.position = "fixed";
+        div.style.width = "6px";
+        div.style.height = "6px";
+        div.style.background = ["#22c55e","#6366f1","#ec4899"][Math.floor(Math.random()*3)];
+        div.style.left = Math.random()*100 + "vw";
+        div.style.top = "-10px";
+        div.style.opacity = 0.8;
+        div.style.borderRadius = "50%";
+        div.style.zIndex = 3;
+
+        document.body.appendChild(div);
+
+        let fall = Math.random()*3 + 2;
+
+        div.animate([
+            { transform:`translateY(0)` },
+            { transform:`translateY(100vh)` }
+        ], {
+            duration: fall * 1000,
+            easing: "linear"
+        });
+
+        setTimeout(()=>div.remove(), fall*1000);
+    }
+}
+confetti();
+
+// 🔊 SOUND
+let audio = new Audio("https://www.soundjay.com/buttons/sounds/button-3.mp3");
+audio.volume = 0.2;
+audio.play();
+
+// 🌌 PARTICLES
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<100;i++){
+    particles.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        r:Math.random()*2 + 0.5,
+        dx:Math.random()-0.5,
+        dy:Math.random()-0.5
+    });
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach(p=>{
+        p.x+=p.dx;
+        p.y+=p.dy;
+
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle="#22c55e";
+        ctx.fill();
+    });
+
+    requestAnimationFrame(animate);
+}
+animate();
+
+function goHome(){
+    window.location.href = "/";
+}
+</script>
+
+</body>
+</html>
